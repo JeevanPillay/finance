@@ -3,7 +3,7 @@ import setuptools
 with open('README.md', 'r', encoding='utf8') as readme_file:
     readme = readme_file.read()
 
-# Gather requirements from requirements_dev.txt
+# Gather requirements from requirements.txt
 install_reqs = []
 requirements_path = 'requirements.txt'
 with open(requirements_path, 'r') as f:
