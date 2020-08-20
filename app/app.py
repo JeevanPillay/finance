@@ -1,6 +1,6 @@
 # app.py
 class App:
 
-    @staticmethod()
+    @staticmethod
     def run():
-        print("Hello world!")
+        print("Hello World...")

@@ -18,7 +18,7 @@ test_requirements = install_reqs
 setuptools.setup(
     name="python-template",
     version="0.0.1",
-    author="Example Author",
+    author="author",
     author_email="author@example.com",
     description="a template project",
     long_description=readme,

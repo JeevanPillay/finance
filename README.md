@@ -13,6 +13,7 @@ https://www.python.org/downloads/release/python-378/
 2. Change the `Makefile` settings dependent on the configurations that are required.
   - ensure that the venv -> `<env_name>` is added to `.gitignore`.
 3. Add dependencies in `requirements.txt`.
+4. Go to `.github/workflows` and update documents depending on the projects name.
 
 ## Building the Project
 1. **Recommended**: `Make venv-<os>` -- this should create the virtual environment -- see `venv-windows` and `venv-unix` in `Makefile` for more information,

@@ -1,14 +1,19 @@
-venv-unix:
-	python3 -m venv <env_name>
-
-venv-windows:
-	py -3.7 -m venv flatenv
+MODULE := app
 
 init:
 	python3 setup.py install
 
-run:
-	echo "run files here"
-
 test:
-	echo "test scripts here"
+	@pytest
+
+run:
+	@python -m $(MODULE)
+
+lint:
+	echo "none"
+
+venv-unix:
+	python3 -m venv venv
+
+venv-windows:
+	py -3.7 -m venv venv
