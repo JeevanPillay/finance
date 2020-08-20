@@ -18,6 +18,7 @@ https://www.python.org/downloads/release/python-378/
     - Unix-like: `cd <yourdir>`, then `source ./<env_name>/bin/activate`
   - In your IDE such as Eclipse PyDev or PyCharm, select the Python interpreter in the
   `<env_name>/bin` or `<env_name>/Scripts` directory for your assignment project.
+  - Note, the virtual environment shouldn't be pushed onto GitHub -- add to `.gitignore`
 
 3. Install the Python environment: `cd <yourdir>` -- if not already in it, then run the set-up script, `python setup.py install`, which will install the dependencies and the environment.
 
