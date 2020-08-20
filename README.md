@@ -15,7 +15,7 @@ https://www.python.org/downloads/release/python-378/
 3. Add dependencies in `requirements.txt`.
 
 ## Building the Project
-1. **Recommended**: `Make virtualenv` -- this should create the virtual environment.
+1. **Recommended**: `Make venv-<os>` -- this should create the virtual environment -- see `venv-windows` and `venv-unix` in `Makefile` for more information,
   - (Every time) Activate the virtual environment to use it in command line:
     - Windows: `cd <yourdir>`, then `<env_name>\Scripts\activate`
     - Unix-like: `cd <yourdir>`, then `source ./<env_name>/bin/activate`
@@ -29,3 +29,11 @@ https://www.python.org/downloads/release/python-378/
 
 ## Adding dependencies
 - `pip install <your-package>` and add to `requirements.txt` if needed.
+
+
+
+# Included Tools
+1. Virtual Environment
+2. GitHub Actions
+3. Python 3.7.8
+4. Makefile -- for fast installation
