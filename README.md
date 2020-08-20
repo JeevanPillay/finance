@@ -44,7 +44,13 @@ https://www.python.org/downloads/release/python-378/
 8. `clean`
 
 # Included Tools
+## General
 1. Virtual Environment
 2. GitHub Actions
 3. Python 3.7.8
 4. Makefile -- for fast installation
+
+# Testing, Debugging and Linting.
+1. PyLint -- Linting
+2. Bandit -- AST-based Static Analysis
+3. CodeCoverage
