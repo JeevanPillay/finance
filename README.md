@@ -1,6 +1,9 @@
 # Python Template
 
-# Configuration
+# Project Setup
+1. Go to `.github/workflows` and update documents depending on the projects name, the branching structures, PRs, etc.
+
+# Environment Configurations
 First, follow these instructions to set up your environment to prepare the Flatland environment on your local machine.
 
 Download and install Python 3.7.8, if not installed yet.
@@ -14,7 +17,6 @@ https://www.python.org/downloads/release/python-378/
   - ensure that the venv -> `<env_name>` is added to `.gitignore`.
   - currently -- `<env_name>` -> `venv`
 3. Add dependencies in `requirements.txt`.
-4. Go to `.github/workflows` and update documents depending on the projects name.
 
 ## Building the Project
 1. **Recommended**: `Make venv-<os>` -- this should create the virtual environment -- see `venv-windows` and `venv-unix` in `Makefile` for more information,
@@ -45,7 +47,7 @@ https://www.python.org/downloads/release/python-378/
 
 # Included Tools
 ## General
-1. Virtual Environment
+1. Virtual Environment -- venv
 2. GitHub Actions
 3. Python 3.7.8
 4. Makefile -- for fast installation
