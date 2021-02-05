@@ -20,19 +20,21 @@ class App:
     @staticmethod
     def run():
         # globals
-        show = True
+        show = False
+        weightage = Portfolio.sample_weightage(6)  # [0.166, 0.166, 0.166, 0.166, 0.166, 0.17]
+
+        # stocks
+        stocks: [Stock] = [Stock(item[0], item[1]) for item in data]
 
         # pm
-        stocks: [Stock] = [Stock(item[0], item[1]) for item in data]
-        portfolio: [Portfolio] = Portfolio(stocks, show)
-
-
-class Date:
-    def __init__(self):
-        pass
+        portfolio: [Portfolio] = Portfolio(stocks, weightage, show)
+        print("Weightage", weightage)
+        print("Portfolio variance", portfolio.variance)
+        print("Portfolio returns", portfolio.returns)
 
 
 # Data represent a nominal percentage of change of a stock based on a specified date.
+# Todo: use this
 class Historical:
     date: date
     percentage: float
@@ -64,6 +66,9 @@ class Stock:
 
     def get_returns(self):
         return self.returns["value"]
+
+    def get_averages(self):
+        return self.returns["average"]
 
     """
     This function transform the price data into returns.
@@ -97,11 +102,34 @@ class Portfolio:
     stocks: [Stock]
     cov: [[float]]
     cor: [[float]]
+    variance: float
+    returns: float
 
-    def __init__(self, stocks: [Stock], show: bool = False):
+    def __init__(self, stocks: [Stock], weightage: [float], show: bool = False):
         self.stocks = stocks
-        self.cov = self.cov(stocks, show)
-        self.cor = self.cor(stocks, show)
+
+        # init
+        excess = np.array([stock.get_returns() for stock in stocks])
+        averages = np.array([stock.get_averages() for stock in stocks])
+
+        # run
+        self.cov = self.cov(excess, show)
+        self.cor = self.cor(excess, show)
+
+        # random sampling
+        self.weightage = weightage
+
+        # portfolio
+        self.variance = self.portfolio_variance(self.cov, self.weightage)
+        self.returns = self.portfolio_return(self.weightage, averages)
+
+    @staticmethod
+    def portfolio_variance(cov: [[float]], weightage: [float]):
+        return np.dot(weightage, np.dot(cov, weightage))
+
+    @staticmethod
+    def portfolio_return(weightage: [float], average: [float]):
+        return np.dot(weightage, average)
 
     """
     This function calculates the variance x covariance matrix for a set of 
@@ -110,17 +138,33 @@ class Portfolio:
     """
 
     @staticmethod
-    def cov(stocks: [Stock], show: bool = False):
-        cov = np.cov(np.array([stock.get_returns() for stock in stocks]))
+    def cov(excess: [[float]], show: bool = False):
+        cov = np.cov(excess)
         if show:
             sn.heatmap(cov, annot=True, fmt='.4g')
             plt.show()
         return cov
 
+    """
+    This function calculates the correlation matrix for a set of 
+    stock selections.
+    Ref: Covariance in Python -- https://datatofish.com/covariance-matrix-python/
+    """
+
     @staticmethod
-    def cor(stocks: [Stock], show: bool = False):
-        cor = np.corrcoef(np.array([stock.get_returns() for stock in stocks]))
+    def cor(excess: [[float]], show: bool = False):
+        cor = np.corrcoef(excess)
         if show:
             sn.heatmap(cor, annot=True, fmt='.4g')
             plt.show()
         return cor
+
+    """
+    This function returns a random continuous multivariate probability distrubition
+    over a range of values that sums to 1
+    Ref: Dirichlet Distribution -- https://en.wikipedia.org/wiki/Dirichlet_distribution
+    """
+
+    @staticmethod
+    def sample_weightage(count: int):
+        return np.random.dirichlet(np.ones(count), size=1)[0]
