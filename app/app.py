@@ -43,15 +43,30 @@ class Stock:
     def __init__(self, ticker: str, prices: [float]):
         self.ticker = ticker
         self.prices = prices
-        self.returns = self.build_return(prices)
-        self.average_returns = np.average(self.returns)
+        self.set_returns(prices)
+
+    def set_returns(self, price):
+        returns = self.returns(price)
+        average = self.average(returns)
+        excess = self.excess(returns, average)
+        self.returns = {
+            "value": returns,
+            "average": average,
+            "excess": excess
+        }
 
     @staticmethod
-    def build_return(prices) -> [float]:
-        returns: [float] = []
-        for i in range(1, len(prices)):
-            returns.append(np.log(prices[i] / prices[i - 1]))
-        return returns
+    def returns(prices) -> [float]:
+        return [np.log(prices[i] / prices[i - 1]) for i in range(1, len(prices))]
+
+    @staticmethod
+    def excess(returns: [float], average: float) -> [float]:
+        return [returns[i] - average for i in range(len(returns))]
+
+    # todo: move this into utils
+    @staticmethod
+    def average(values: [float]) -> float:
+        return np.average(values)
 
     def __str__(self):
         return self.ticker
