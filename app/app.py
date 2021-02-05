@@ -1,7 +1,9 @@
 # app.py
 from datetime import date
 
+import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sn
 
 data: [(str, [float])] = [
     ("GE", [2.36, 4.15, 4.98, 8.80, 13.51, 21.64, 30.57, 40.51, 42.42, 34.82, 22.25, 31.86]),
@@ -17,7 +19,12 @@ class App:
 
     @staticmethod
     def run():
-        stock = Stock(data[0][0], data[0][1])
+        # globals
+        show = True
+
+        # pm
+        stocks: [Stock] = [Stock(item[0], item[1]) for item in data]
+        portfolio: [Portfolio] = Portfolio(stocks, show)
 
 
 class Date:
@@ -55,15 +62,29 @@ class Stock:
             "excess": excess
         }
 
+    def get_returns(self):
+        return self.returns["value"]
+
+    """
+    This function transform the price data into returns.
+    """
+
     @staticmethod
-    def returns(prices) -> [float]:
+    def returns(prices: [float]) -> [float]:
         return [np.log(prices[i] / prices[i - 1]) for i in range(1, len(prices))]
+
+    """
+    This function implements the calculation for excess returns minus mean.
+    """
 
     @staticmethod
     def excess(returns: [float], average: float) -> [float]:
         return [returns[i] - average for i in range(len(returns))]
 
-    # todo: move this into utils
+    """
+    This function implements the average return value over an array of returns.
+    """
+
     @staticmethod
     def average(values: [float]) -> float:
         return np.average(values)
@@ -74,6 +95,32 @@ class Stock:
 
 class Portfolio:
     stocks: [Stock]
+    cov: [[float]]
+    cor: [[float]]
 
-    def __init__(self, stocks: [Stock]):
+    def __init__(self, stocks: [Stock], show: bool = False):
         self.stocks = stocks
+        self.cov = self.cov(stocks, show)
+        self.cor = self.cor(stocks, show)
+
+    """
+    This function calculates the variance x covariance matrix for a set of 
+    stock selections.
+    Ref: Covariance in Python -- https://datatofish.com/covariance-matrix-python/
+    """
+
+    @staticmethod
+    def cov(stocks: [Stock], show: bool = False):
+        cov = np.cov(np.array([stock.get_returns() for stock in stocks]))
+        if show:
+            sn.heatmap(cov, annot=True, fmt='.4g')
+            plt.show()
+        return cov
+
+    @staticmethod
+    def cor(stocks: [Stock], show: bool = False):
+        cor = np.corrcoef(np.array([stock.get_returns() for stock in stocks]))
+        if show:
+            sn.heatmap(cor, annot=True, fmt='.4g')
+            plt.show()
+        return cor
