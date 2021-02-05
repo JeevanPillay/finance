@@ -1,6 +1,8 @@
 # app.py
 from datetime import date
 
+import numpy as np
+
 data: [(str, [float])] = [
     ("GE", [2.36, 4.15, 4.98, 8.80, 13.51, 21.64, 30.57, 40.51, 42.42, 34.82, 22.25, 31.86]),
     ("MSFT", [2.68, 2.64, 3.68, 5.73, 12.64, 18.49, 43.37, 48.51, 30.26, 31.58, 23.52, 28.16]),
@@ -15,7 +17,7 @@ class App:
 
     @staticmethod
     def run():
-        print("Hello World...")
+        stock = Stock(data[0][0], data[0][1])
 
 
 class Date:
@@ -24,7 +26,7 @@ class Date:
 
 
 # Data represent a nominal percentage of change of a stock based on a specified date.
-class Data:
+class Historical:
     date: date
     percentage: float
 
@@ -35,9 +37,21 @@ class Data:
 
 class Stock:
     ticker: str
+    prices: [float]
+    returns: [float]
 
-    def __init__(self, ticker: str):
+    def __init__(self, ticker: str, prices: [float]):
         self.ticker = ticker
+        self.prices = prices
+        self.returns = self.build_return(prices)
+        self.average_returns = np.average(self.returns)
+
+    @staticmethod
+    def build_return(prices) -> [float]:
+        returns: [float] = []
+        for i in range(1, len(prices)):
+            returns.append(np.log(prices[i] / prices[i - 1]))
+        return returns
 
     def __str__(self):
         return self.ticker
@@ -48,7 +62,3 @@ class Portfolio:
 
     def __init__(self, stocks: [Stock]):
         self.stocks = stocks
-
-    @staticmethod
-    def run():
-        print("Portfolio Manager")

@@ -4,4 +4,4 @@ from .app import App
 from .app import Portfolio
 
 if __name__ == '__main__':
-    Portfolio.run()
+    App.run()
