@@ -21,17 +21,27 @@ class App:
     def run():
         # globals
         show = False
-        weightage = Portfolio.sample_weightage(6)  # [0.166, 0.166, 0.166, 0.166, 0.166, 0.17]
+        iterations = 10000
+        seed = 44758284
+
+        # init
+        np.random.seed(seed)
 
         # stocks
         stocks: [Stock] = [Stock(item[0], item[1]) for item in data]
 
         # pm
-        portfolio: [Portfolio] = Portfolio(stocks, weightage, show)
-        print("Weightage", weightage)
-        print("Portfolio variance", portfolio.variance)
-        print("Portfolio returns", portfolio.returns)
+        portfolio: [Portfolio] = Portfolio(stocks, show)
 
+        # iterate
+        w = []
+        for i in range(iterations):
+            weightage = Portfolio.sample_weightage(6)
+            analytics = portfolio.analytics(weightage)
+            w.append([weightage, analytics[0], analytics[1]])
+
+        sorted_returns = sorted(w, key=lambda a_entry: a_entry[2])
+        print(sorted_returns[-1])
 
 # Data represent a nominal percentage of change of a stock based on a specified date.
 # Todo: use this
@@ -105,23 +115,19 @@ class Portfolio:
     variance: float
     returns: float
 
-    def __init__(self, stocks: [Stock], weightage: [float], show: bool = False):
+    def __init__(self, stocks: [Stock], show: bool = False):
         self.stocks = stocks
 
         # init
-        excess = np.array([stock.get_returns() for stock in stocks])
-        averages = np.array([stock.get_averages() for stock in stocks])
+        self.excess = np.array([stock.get_returns() for stock in stocks])
+        self.averages = np.array([stock.get_averages() for stock in stocks])
 
         # run
-        self.cov = self.cov(excess, show)
-        self.cor = self.cor(excess, show)
+        self.cov = self.cov(self.excess, show)
+        self.cor = self.cor(self.excess, show)
 
-        # random sampling
-        self.weightage = weightage
-
-        # portfolio
-        self.variance = self.portfolio_variance(self.cov, self.weightage)
-        self.returns = self.portfolio_return(self.weightage, averages)
+    def analytics(self, weightage: [float]):
+        return self.portfolio_variance(self.cov, weightage), self.portfolio_return(weightage, self.averages)
 
     @staticmethod
     def portfolio_variance(cov: [[float]], weightage: [float]):
@@ -160,7 +166,7 @@ class Portfolio:
         return cor
 
     """
-    This function returns a random continuous multivariate probability distrubition
+    This function returns a random continuous multivariate probability distribution
     over a range of values that sums to 1
     Ref: Dirichlet Distribution -- https://en.wikipedia.org/wiki/Dirichlet_distribution
     """
